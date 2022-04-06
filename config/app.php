@@ -108,6 +108,9 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'quiz_api_uri' => env('QUIZ_API_URI'),
+    'quiz_api_key' => env('QUIZ_API_KEY'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
