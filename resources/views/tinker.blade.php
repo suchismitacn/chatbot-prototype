@@ -33,11 +33,20 @@
 </head>
 <body>
 <div class="container">
-    <div class="content" id="app">
+    Click on the widget to get started
+    {{-- <div class="content" id="app">
         <botman-tinker api-endpoint="/botman"></botman-tinker>
-    </div>
+    </div> --}}
 </div>
-
+<script>
+    var botmanWidget = {
+        title: 'QuizBot',
+        introMessage: 'Welcome to QuizBot! Type Hi/Hello to start.',
+        userId: "{{request()->session()->getId()}}",
+        displayMessageTime: true
+    }
+</script>
 <script src="/js/app.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
 </body>
 </html>

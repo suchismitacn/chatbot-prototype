@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\Repositories\ConversationRepository;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -34,11 +35,12 @@ class QuizConversation extends Conversation
         ];
 
         $question = $this->createQuestion('Choose a category first.', $options, 'ask_category');
+        $this->storeConversation('bot', $question->getText(), $options);
 
         return $this->ask($question, function (Answer $answer) use ($options) {
             if ($answer->isInteractiveMessageReply()) {
                 $this->category = $answer->getValue();
-                $this->say("You have chosen: " . $options[$this->category]);
+                $this->storeConversation('user', $options[$this->category]);
                 $this->askLevel();
             } else {
                 $this->say('I didn\'t understand that. Please select from the above options.');
@@ -56,11 +58,12 @@ class QuizConversation extends Conversation
         ];
 
         $question = $this->createQuestion('Choose a difficulty level.', $options, 'ask_level');
+        $this->storeConversation('bot', $question->getText(), $options);
 
         return $this->ask($question, function (Answer $answer) use ($options) {
             if ($answer->isInteractiveMessageReply()) {
                 $this->level = $answer->getValue();
-                $this->say("You have chosen: " . $options[$this->level]);
+                $this->storeConversation('user', $options[$this->level]);
                 $this->getQuiz();
             } else {
                 $this->say('I didn\'t understand that. Please select from the following options.');
@@ -75,14 +78,18 @@ class QuizConversation extends Conversation
         $this->correct_answer = $options[$quiz->correct_answer];
 
         $question = $this->createQuestion($quiz->question, $options, 'get_quiz');
+        $this->storeConversation('bot', $question->getText(), $options);
 
         return $this->ask($question, function (Answer $answer) use ($quiz) {
             if ($answer->isInteractiveMessageReply()) {
+                $this->storeConversation('user', $quiz->answers->{$answer->getValue()});
                 if ($answer->getValue() === $quiz->correct_answer) {
-                    $this->say('Good job!');
+                    $reply = 'Good job!';
                 } else {
-                    $this->say('Oops! The correct answer is: ' . $this->correct_answer);
+                    $reply = 'Oops! The correct answer is: ' . $this->correct_answer;
                 }
+                $this->say($reply);
+                $this->storeConversation('bot', $reply);
             } else {
                 $this->say('I didn\'t understand that. Please select from the following options.');
                 $this->repeat();
@@ -127,7 +134,12 @@ class QuizConversation extends Conversation
             $quiz = array_first($response);
             if ($quiz) $this->askQuiz($quiz);
         } catch (\Exception $exception) {
+            \Log::debug("Exception: ".$exception->getMessage());
             $this->say('Something went wrong! :(');
         }
+    }
+
+    protected function storeConversation(string $sender, string $content, array $options = null) {
+        return (new ConversationRepository)->storeConversation(request()->session()->getId(), $sender, $content, $options);
     }
 }
