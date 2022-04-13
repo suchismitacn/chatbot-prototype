@@ -33,6 +33,7 @@ class InitConversation extends Conversation
 
         $question = $this->createQuestion('Huh - you woke me up. What do you need?', $options, 'ask_reason');
         $this->storeConversation('bot', $question->getText(), $options);
+
         return $this->ask($question, function (Answer $answer) use ($options) {
             if ($answer->isInteractiveMessageReply()) {
                 $this->storeConversation('user', $options[$answer->getText()]);
@@ -55,6 +56,7 @@ class InitConversation extends Conversation
                         $this->storeConversation('bot', 'Ok! Have a nice day. :)');
                 }
             } else {
+                $this->storeConversation('user', $answer->getText());
                 $this->say('I didn\'t understand that. Please select from the following options.');
                 $this->repeat();
             }
