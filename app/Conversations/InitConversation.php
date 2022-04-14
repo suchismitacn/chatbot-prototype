@@ -84,7 +84,8 @@ class InitConversation extends Conversation
             ->addButtons($buttons);
     }
 
-    protected function storeConversation(string $sender, string $text, array $options = null) {
+    protected function storeConversation(string $sender, string $text, array $options = null)
+    {
         return (new ConversationRepository)->storeConversation(request()->session()->getId(), $sender, $text, $options);
     }
 }
