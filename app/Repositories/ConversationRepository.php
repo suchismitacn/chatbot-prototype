@@ -15,17 +15,19 @@ class ConversationRepository
         $this->conversation = new Conversation();
     }
 
-    public function storeConversation(string $userId, string $sender, string $content, array $optionalData = null)
+    public function storeConversation(string $sessionId, string $sender, string $recipient, string $content, array $optionalData = null)
     {
-        \Log::debug("User Id: ".$userId);
+        \Log::debug("*************************************");
+        \Log::debug("Session Id: ".$sessionId);
         \Log::debug("Sender: ".$sender);
+        \Log::debug("Recipient: ".$recipient);
         \Log::debug("Content: ".$content);
         if($optionalData) \Log::debug("Options: ".print_r($optionalData, true));
-        \Log::debug("****************************************");
-
+        \Log::debug("*************************************");
         return $this->conversation->create([
-            'user_id' => $userId,
+            'session_id' => $sessionId,
             'sender' => $sender,
+            'recipient' => $recipient,
             'content' => $content,
             'optional_data' => $optionalData
         ]);
@@ -38,9 +40,9 @@ class ConversationRepository
             ->get();
     }
 
-    public function sendConversation(string $userId, string $email)
+    public function sendConversation(string $sessionId, string $email)
     {
-        $conversation = $this->getConversation(['user_id' => $userId]);
+        $conversation = $this->getConversation(['session_id' => $sessionId]);
 
         Mail::to($email)->send(new SendConversation($conversation));
 

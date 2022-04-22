@@ -36,7 +36,7 @@
                                                                     @if (!is_null($entry->optional_data))
                                                                     <div>
                                                                     @foreach ($entry->optional_data as $option)
-                                                                        <div class="btn">{{ $option }}</div>
+                                                                        <div class="btn">{{ $option['text'] }}</div>
                                                                     @endforeach
                                                                     </div>
                                                                     @endif
