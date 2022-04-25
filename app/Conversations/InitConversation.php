@@ -10,29 +10,48 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 
 class InitConversation extends Conversation
 {
+    protected $name;
+
     /**
      * Start the conversation
      */
     public function run()
     {
-        $this->askReason();
+        $this->name = $this->bot->userStorage()->get('name');
+
+        if (!$this->name) {
+            $this->askName();
+        } else {
+            $this->askChoice();
+        }
     }
 
-    /**
-     * First question
-     */
-    public function askReason()
+    public function askName()
+    {
+        $this->ask('Hello! What is your name?', function (Answer $answer) {
+            if (trim($answer->getText())) {
+                $this->name = $answer->getText();
+                $this->bot->userStorage()->save([
+                    'name' => $this->name
+                ]);
+                $this->askChoice();
+            } else {
+                $this->repeat();
+            }
+        });
+    }
+
+    public function askChoice()
     {
         $options = [
             'joke' => 'Tell a joke',
             'quote' => 'Give me a fancy quote',
             'ask' => 'Ask me a question',
-            'bye' => 'Umm, gotta go.'
         ];
 
-        $question = $this->createQuestion('Huh - you woke me up. What do you need?', $options, 'ask_reason');
+        $question = $this->createQuestion('Hello,' . $this->name . '! What do you want me to do?', $options, 'ask_choice');
 
-        return $this->ask($question, function (Answer $answer) use ($options) {
+        return $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 switch ($answer->getValue()) {
                     case 'joke':
@@ -46,8 +65,6 @@ class InitConversation extends Conversation
                     case 'ask':
                         $this->bot->startConversation(new QuizConversation);
                         break;
-                    default:
-                        $this->say('Ok! Have a nice day. :)');
                 }
             } else {
                 $this->say('I didn\'t understand that. Please select from the following options.');

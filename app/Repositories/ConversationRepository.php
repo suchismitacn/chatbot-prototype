@@ -17,13 +17,6 @@ class ConversationRepository
 
     public function storeConversation(string $sessionId, string $sender, string $recipient, string $content, array $optionalData = null)
     {
-        \Log::debug("*************************************");
-        \Log::debug("Session Id: ".$sessionId);
-        \Log::debug("Sender: ".$sender);
-        \Log::debug("Recipient: ".$recipient);
-        \Log::debug("Content: ".$content);
-        if($optionalData) \Log::debug("Options: ".print_r($optionalData, true));
-        \Log::debug("*************************************");
         return $this->conversation->create([
             'session_id' => $sessionId,
             'sender' => $sender,

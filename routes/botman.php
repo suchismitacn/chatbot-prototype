@@ -18,7 +18,14 @@ $botman->hears('Hi|Hello|Hey', function ($bot) {
     $bot->startConversation(new InitConversation);
 });
 
-$botman->hears('Mail me|Mail conversation|mail me|email me|Email me', function ($bot) {
+$botman->hears('Mail me|Email me', function ($bot) {
     $bot->startConversation(new SendConversation);
 });
 
+$botman->hears('Bye', function ($bot) {
+    $user = $bot->userStorage()->get('name') ?? 'user';
+    $bot->reply('Bye ' . $user . '! Have a nice day. :)');
+    /* user storage can be deleted only by this way, I tried to delete from inside 
+    conversation class, but it did not work. Same with stopsConversation. */
+    $bot->userStorage()->delete();
+})->stopsConversation();

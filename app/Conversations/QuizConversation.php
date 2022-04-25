@@ -56,7 +56,7 @@ class QuizConversation extends Conversation
 
         $question = $this->createQuestion('Choose a difficulty level.', $options, 'ask_level');
 
-        return $this->ask($question, function (Answer $answer) use ($options) {
+        return $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 $this->level = $answer->getValue();
                 $this->getQuiz();
@@ -124,9 +124,14 @@ class QuizConversation extends Conversation
             $request = $client->get(config('app.quiz_api_uri'), ['query' => $params]);
             $response = json_decode($request->getBody()->getContents());
             $quiz = array_first($response);
-            if ($quiz) $this->askQuiz($quiz);
+            \Log::debug("Quiz ".print_r($quiz, true));
+            if (!empty($quiz)) {
+                $this->askQuiz($quiz);
+            } else {
+                $this->say('We have run out of questions!');
+            }
         } catch (\Exception $exception) {
-            \Log::debug("Exception: ".$exception->getMessage());
+            \Log::debug("getQuiz Exception: " . $exception->getMessage());
             $this->say('Something went wrong! :(');
         }
     }

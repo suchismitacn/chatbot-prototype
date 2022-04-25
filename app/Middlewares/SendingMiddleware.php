@@ -5,7 +5,6 @@ namespace App\Middlewares;
 use App\Repositories\ConversationRepository;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Interfaces\Middleware\Sending;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class SendingMiddleware implements Sending
@@ -22,17 +21,17 @@ class SendingMiddleware implements Sending
      */
     public function sending($payload, $next, BotMan $bot)
     {
+        /* in documentation payload value is further used to call getText() and getActions(), 
+        but in practice I had to use 'message' index otherwise code was throwing errors */
         $message = $payload['message'];
-        \Log::debug("*************************************");
-        \Log::debug("Sending message: ".print_r($message, true));
-        \Log::debug("Message Text: ".print_r($message->getText(), true));
-        if($message instanceof OutgoingMessage) {
-            $this->storeConversation('bot', 'user', $message->getText());
+        $user = $bot->userStorage()->get('name') ?? 'user';
+
+        if ($message instanceof OutgoingMessage) {
+            $this->storeConversation('bot', $user, $message->getText());
         } else {
-            \Log::debug("Message Options: ".print_r($message->getActions(), true));
-            $this->storeConversation('bot', 'user', $message->getText(), $message->getActions());
+            $this->storeConversation('bot', $user, $message->getText(), $message->getActions());
         }
-        
+
         return $next($payload);
     }
 

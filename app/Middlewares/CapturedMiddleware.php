@@ -20,10 +20,9 @@ class CapturedMiddleware implements Captured
      */
     public function captured(IncomingMessage $message, $next, BotMan $bot)
     {
-        \Log::debug("*************************************");
-        \Log::debug("Captured message: ".print_r($message, true));
-        \Log::debug("*************************************");
-        $this->storeConversation('user', 'bot', $message->getText());
+        // this code is not working in this particular middleware, even though user storage has value
+        $user = $bot->userStorage()->get('name') ?? 'user';
+        $this->storeConversation($user, 'bot', $message->getText());
         return $next($message);
     }
 

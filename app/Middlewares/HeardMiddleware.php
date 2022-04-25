@@ -20,10 +20,8 @@ class HeardMiddleware implements Heard
      */
     public function heard(IncomingMessage $message, $next, BotMan $bot)
     {
-        \Log::debug("*************************************");
-        \Log::debug("Heard message: ".print_r($message->getText(), true));
-        \Log::debug("*************************************");
-        $this->storeConversation('user', 'bot', $message->getText());
+        $user = $bot->userStorage()->get('name') ?? 'user';
+        $this->storeConversation($user, 'bot', $message->getText());
         return $next($message);
     }
 
