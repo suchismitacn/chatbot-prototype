@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>BotMan Studio</title>
+    <title>{{config('app.name')}}</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css">
@@ -33,15 +33,15 @@
 </head>
 <body>
 <div class="container">
-    Click on the widget to get started
-    {{-- <div class="content" id="app">
-        <botman-tinker api-endpoint="/botman"></botman-tinker>
-    </div> --}}
+    <div class="content" id="app">
+        {{-- <botman-tinker api-endpoint="/botman"></botman-tinker> --}}
+        Click on the chat widget to get started
+    </div>
 </div>
 <script>
     var botmanWidget = {
         title: 'QuizBot',
-        introMessage: 'Welcome to QuizBot! Type Hi/Hello to start.',
+        introMessage: '<h4>Welcome to QuizBot!</h4><p>Type: <ul><li>start - to start.</li><li>bye - to exit.</li><li>mail - to get chat transcript.</li></ul></p>',
         userId: "{{request()->session()->getId()}}",
         displayMessageTime: true
     }

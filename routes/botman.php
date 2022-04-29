@@ -14,15 +14,15 @@ $botman->middleware->captured(new CapturedMiddleware());
 $botman->middleware->sending(new SendingMiddleware());
 
 
-$botman->hears('Hi|Hello|Hey', function ($bot) {
+$botman->hears('start', function ($bot) {
     $bot->startConversation(new InitConversation);
 });
 
-$botman->hears('Mail me|Email me', function ($bot) {
+$botman->hears('mail', function ($bot) {
     $bot->startConversation(new SendConversation);
 });
 
-$botman->hears('Bye', function ($bot) {
+$botman->hears('bye', function ($bot) {
     $user = $bot->userStorage()->get('name') ?? 'user';
     $bot->reply('Bye ' . $user . '! Have a nice day. :)');
     /* user storage can be deleted only by this way, I tried to delete from inside 

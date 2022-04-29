@@ -70,7 +70,15 @@ class QuizConversation extends Conversation
     protected function askQuiz($quiz)
     {
         $options = (array) $quiz->answers;
-        $this->correct_answer = $options[$quiz->correct_answer];
+        if($quiz->multiple_correct_answers==='true') {
+            $first_correct_answer = collect($options)->first(function ($value, $key) {
+                return $value==='true';
+            });
+            $this->correct_answer = $options[$first_correct_answer];
+            \Log::debug("Multiple Correct Answers: ".print_r($first_correct_answer, true));
+        } else {
+            $this->correct_answer = $options[$quiz->correct_answer];
+        }
 
         $question = $this->createQuestion($quiz->question, $options, 'get_quiz');
 
@@ -131,7 +139,7 @@ class QuizConversation extends Conversation
                 $this->say('We have run out of questions!');
             }
         } catch (\Exception $exception) {
-            \Log::debug("getQuiz Exception: " . $exception->getMessage());
+            \Log::debug("getQuiz Exception: " . $exception->getTraceAsString());
             $this->say('Something went wrong! :(');
         }
     }

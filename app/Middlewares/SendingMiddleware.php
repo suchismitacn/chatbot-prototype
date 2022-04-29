@@ -21,6 +21,7 @@ class SendingMiddleware implements Sending
      */
     public function sending($payload, $next, BotMan $bot)
     {
+        $bot->typesAndWaits(2);
         /* in documentation payload value is further used to call getText() and getActions(), 
         but in practice I had to use 'message' index otherwise code was throwing errors */
         $message = $payload['message'];
