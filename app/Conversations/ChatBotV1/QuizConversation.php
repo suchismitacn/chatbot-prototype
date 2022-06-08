@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Conversations;
+namespace App\Conversations\ChatBotV1;
 
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Conversations;
+namespace App\Conversations\ChatBotV1;
 
 use Illuminate\Foundation\Inspiring;
 use BotMan\BotMan\Messages\Incoming\Answer;

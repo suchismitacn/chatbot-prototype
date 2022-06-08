@@ -22,6 +22,10 @@ class SendingMiddleware implements Sending
     public function sending($payload, $next, BotMan $bot)
     {
         $bot->typesAndWaits(2);
+        return $next($payload);
+    }
+
+    protected function processPayload($payload, $bot) {
         /* in documentation payload value is further used to call getText() and getActions(), 
         but in practice I had to use 'message' index otherwise code was throwing errors */
         $message = $payload['message'];
@@ -32,8 +36,6 @@ class SendingMiddleware implements Sending
         } else {
             $this->storeConversation('bot', $user, $message->getText(), $message->getActions());
         }
-
-        return $next($payload);
     }
 
     protected function storeConversation(string $sender, string $recipient, string $text, array $options = null)
