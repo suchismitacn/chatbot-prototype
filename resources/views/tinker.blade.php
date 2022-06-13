@@ -42,7 +42,7 @@
     var botmanWidget = {
         title: 'ChatBot',
         // introMessage: '<h4>Welcome to QuizBot!</h4><p>Type: <ul><li>/start - to start.</li><li>/bye - to exit.</li><li>/mail - to get chat transcript.</li></ul></p>',
-        introMessage: 'Welcome to ChatBot! Send me a hi to get started',
+        introMessage: 'Welcome to ChatBot! Send me a hi to get started, menu to see the list of things I can help you with. To end the conversation anytime, type bye.',
         userId: "{{request()->session()->getId()}}",
         displayMessageTime: true
     }

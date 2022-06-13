@@ -2,6 +2,8 @@
 
 use App\Conversations\ChatBotV1\InitConversation;
 use App\Conversations\ChatBotV1\SendConversation;
+use App\Conversations\ChatBotV2\FAQConversation;
+use App\Conversations\ChatBotV2\MenuConversation;
 use App\Conversations\ChatBotV2\OriginateConversation;
 use App\Middlewares\CapturedMiddleware;
 use App\Middlewares\HeardMiddleware;
@@ -29,6 +31,7 @@ $botman->middleware->received($dialogflow);
 $botman->hears('bye', function ($bot) {
     $user = $bot->userStorage()->get('name') ?? 'user';
     $bot->reply('Bye ' . $user . '! Have a nice day. :)');
+    $bot->reply('You can always wake me up by saying hi.');
     /* user storage can be deleted only by this way, I tried to delete from inside 
     conversation class, but it did not work. Same with stopsConversation. */
     $bot->userStorage()->delete();
@@ -38,10 +41,12 @@ $botman->hears('hi', function ($bot) {
     $bot->startConversation(new OriginateConversation);
 });
 
+$botman->hears('menu', function ($bot) {
+    $bot->startConversation(new MenuConversation);
+});
+
 $botman->hears('testfaq.(.*)', function ($bot) {
-    $extras = $bot->getMessage()->getExtras();
-    \Log::debug("Extras: ".print_r($extras, true));
-    $bot->reply($extras['apiReply']);
+    $bot->startConversation(new FAQConversation);
 })->middleware($dialogflow);
 
 $botman->fallback(function($bot) {
