@@ -24,9 +24,9 @@ $botman->middleware->received($dialogflow);
 //     $bot->startConversation(new InitConversation);
 // });
 
-// $botman->hears('mail', function ($bot) {
-//     $bot->startConversation(new SendConversation);
-// });
+$botman->hears('mail', function ($bot) {
+    $bot->startConversation(new SendConversation);
+});
 
 $botman->hears('bye', function ($bot) {
     $user = $bot->userStorage()->get('name') ?? 'user';
