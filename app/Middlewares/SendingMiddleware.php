@@ -22,6 +22,7 @@ class SendingMiddleware implements Sending
     public function sending($payload, $next, BotMan $bot)
     {
         $bot->typesAndWaits(2);
+        $this->processPayload($payload, $bot);
         return $next($payload);
     }
 
