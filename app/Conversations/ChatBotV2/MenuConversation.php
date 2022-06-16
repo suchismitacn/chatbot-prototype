@@ -35,6 +35,9 @@ class MenuConversation extends Conversation
 
         return $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
+                $this->bot->userStorage()->save([
+                    'department' => $answer->getValue()
+                ]);
                 switch ($answer->getValue()) {
                     case 'dealerships':
                         $this->getNearestDealerships();
@@ -43,9 +46,6 @@ class MenuConversation extends Conversation
                         $this->getContacts();
                         break;
                     default:
-                        $this->bot->userStorage()->save([
-                            'department' => $answer->getValue()
-                        ]);
                         $this->say('What ' . $answer->getValue() . ' related queries do you want help with?');
                 }
             } else {
@@ -60,10 +60,15 @@ class MenuConversation extends Conversation
         $this->ask('What is your postcode?', function (Answer $answer) {
             if (preg_match("/^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\s?[0-9][A-Za-z]{2}$/", $answer->getValue())) {
                 /* Fetch nearest dealership info via api and display, I'm using placeholder values for demo purposes */
-                $response = '<h4>Here are the nearest dealerships for you:</h4>
-                <li>Dealership A</li>
-                <li>Dealership B</li>
-                <li>Dealership C</li>';
+                $details = config('dealerships.'. $answer->getValue());
+                if($details) {
+                    $response = '<p>Here are the dealership details for you:</p>
+                    <p><strong>Address:</strong> '.$details['address'].'</p>
+                    <p><strong>Sales:</strong> '.$details['sales'].'</p>
+                    <p><strong>Service:</strong> '.$details['service'].'</p>';
+                } else {
+                    $response = 'Sorry! We couldn\'t find a dealership based on your postcode.'; 
+                }
                 $this->say($response);
             } else {
                 $this->repeat('That doesn\'t look like a valid postcode. What is your postcode?');
@@ -74,10 +79,10 @@ class MenuConversation extends Conversation
     protected function getContacts()
     {
         /* fetch contact details via api and display, I'm using placeholder values for demo purposes */
-        $response = '<h4>Here are the important contacts through which you can reach us:</h4>
-        <ol><li>Phone</li>
-        <li>Address</li>
-        <li>Email</li></ol>';
+        $response = '<p>Here is how you can reach us:</p>
+        <p>Stoneacre Head Office, Omega Boulevard, Thorne, DN8 5TX</p>
+        <p><a href="https://www.facebook.com/StoneacreMotorGroup">Facebook</a></p>
+        <p><a href="https://twitter.com/StoneacreMotors">Twitter</a></p>';
         $this->say($response);
     }
 

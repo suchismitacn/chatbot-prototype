@@ -17,7 +17,7 @@ class FAQConversation extends Conversation
     public function run()
     {
         $extras = $this->bot->getMessage()->getExtras();
-        \Log::debug("Extras: " . print_r($extras, true));
+        // \Log::debug("Extras: " . print_r($extras, true));
         $this->say($extras['apiReply']);
         $this->getUserFeedback();
     }
@@ -28,7 +28,7 @@ class FAQConversation extends Conversation
             [
                 'pattern' => 'yes|yep',
                 'callback' => function () {
-                    $this->say('Great!!! :) Anything else?');
+                    $this->say('Great!!! :)');
                 }
             ],
             [
