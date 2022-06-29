@@ -75,7 +75,7 @@ class QuizConversation extends Conversation
                 return $value==='true';
             });
             $this->correct_answer = $options[$first_correct_answer];
-            \Log::debug("Multiple Correct Answers: ".print_r($first_correct_answer, true));
+            // \Log::debug("Multiple Correct Answers: ".print_r($first_correct_answer, true));
         } else {
             $this->correct_answer = $options[$quiz->correct_answer];
         }
@@ -132,14 +132,14 @@ class QuizConversation extends Conversation
             $request = $client->get(config('app.quiz_api_uri'), ['query' => $params]);
             $response = json_decode($request->getBody()->getContents());
             $quiz = array_first($response);
-            \Log::debug("Quiz ".print_r($quiz, true));
+            // \Log::debug("Quiz ".print_r($quiz, true));
             if (!empty($quiz)) {
                 $this->askQuiz($quiz);
             } else {
                 $this->say('We have run out of questions!');
             }
         } catch (\Exception $exception) {
-            \Log::debug("getQuiz Exception: " . $exception->getTraceAsString());
+            // \Log::debug("getQuiz Exception: " . $exception->getTraceAsString());
             $this->say('Something went wrong! :(');
         }
     }
