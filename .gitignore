@@ -13,3 +13,5 @@ yarn-error.log
 /.idea
 /.vscode
 dialogflow.json
+/public/*
+/storage/*
