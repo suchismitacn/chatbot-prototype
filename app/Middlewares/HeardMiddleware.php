@@ -20,13 +20,12 @@ class HeardMiddleware implements Heard
      */
     public function heard(IncomingMessage $message, $next, BotMan $bot)
     {
-        $user = $bot->userStorage()->get('name') ?? 'user';
-        $this->storeConversation($user, 'bot', $message->getText());
+        $this->storeConversation('chatbot', $message->getText());
         return $next($message);
     }
 
-    protected function storeConversation(string $sender, string $recipient, string $text, array $options = null)
+    protected function storeConversation(string $origin, string $text, array $options = null)
     {
-        return (new ConversationRepository)->storeConversation(request()->session()->getId(), $sender, $recipient, $text, $options);
+        return (new ConversationRepository)->storeConversation(request()->session()->getId(), null, $origin, $text, $options);
     }
 }

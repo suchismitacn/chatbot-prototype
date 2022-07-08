@@ -15,12 +15,12 @@ class ConversationRepository
         $this->conversation = new Conversation();
     }
 
-    public function storeConversation(string $sessionId, string $sender, string $recipient, string $content, array $optionalData = null)
+    public function storeConversation($sender_id, $recipient_id, string $origin, string $content, array $optionalData = null)
     {
         return $this->conversation->create([
-            'session_id' => $sessionId,
-            'sender' => $sender,
-            'recipient' => $recipient,
+            'sender_id' => $sender_id,
+            'recipient_id' => $recipient_id,
+            'origin' => $origin,
             'content' => $content,
             'optional_data' => $optionalData
         ]);
@@ -35,7 +35,11 @@ class ConversationRepository
 
     public function sendConversation(string $sessionId, string $email)
     {
-        $conversation = $this->getConversation(['session_id' => $sessionId]);
+        // $conversation = $this->getConversation(['session_id' => $sessionId]);
+        $conversation = $this->conversation
+            ->where('sender_id', $sessionId)
+            ->orWhere('recipient_id', $sessionId)
+            ->get();
 
         Mail::to($email)->send(new SendConversation($conversation));
 
