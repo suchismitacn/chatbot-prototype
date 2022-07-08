@@ -6,7 +6,8 @@
                     <div class="card-header">Chats</div>
 
                     <div class="card-body">
-                        <div v-for="n in 5" :key="n" :class="['row', n % 2 === 0 ? 'justify-content-start' : 'justify-content-end']">
+                        <div v-for="n in 5" :key="n"
+                            :class="['row', n % 2 === 0 ? 'justify-content-start' : 'justify-content-end']">
                             <chat-message></chat-message>
                         </div>
                     </div>
@@ -22,10 +23,10 @@
 <script>
 import ChatBox from './ChatBox.vue'
 import ChatMessage from './ChatMessage.vue'
-    export default {
-  components: { ChatMessage, ChatBox },
-        mounted() {
-            console.log('Chat mounted.')
-        }
-    }
+export default {
+    components: { ChatMessage, ChatBox },
+    mounted() {
+        console.log('Chat mounted.')
+    },
+}
 </script>
