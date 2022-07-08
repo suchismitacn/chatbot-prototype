@@ -2,8 +2,6 @@
     <div>
         <input type="text" class="form-control" v-model="message" placeholder="Press enter to send your message"
             @keyup.enter="sendMessage">
-            <button @click="sendMessage">Send message</button>
-        This is message: {{ message }}
     </div>
 </template>
 
@@ -14,12 +12,14 @@ export default {
     },
     data() {
         return {
-            message: 'Test'
+            message: ''
         }
     },
     methods: {
         sendMessage() {
             console.log("Enter has been pressed");
+            this.$emit('messageSent', { 'name': 'Test 1', 'content': this.message });
+            this.message = '';
         }
     }
 }
