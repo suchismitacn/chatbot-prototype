@@ -5,10 +5,7 @@
                 <div class="card">
                     <div class="card-header">Live Chat</div>
                     <div class="card-body overflow-auto" style="height:500px">
-                        <div v-for="(message, index) in messages" :key="message.id"
-                            :class="['row', index % 2 === 0 ? 'justify-content-start' : 'justify-content-end']">
-                            <chat-message :message="message"></chat-message>
-                        </div>
+                        <chat-message v-for="(message, index) in messages" :key="message.id" :message="message" :index="index"></chat-message>
                     </div>
                     <div class="card-footer">
                         <chat-box @message-sent="messageSent"></chat-box>
@@ -31,21 +28,15 @@ export default {
     },
     mounted() {
         console.log('Chat mounted.')
-        this.messages = [{
-            'id': 1,
-            'name': 'Test 1',
-            'content': 'This is a test message from 1'
-        },
-        {
-            'id': 2,
-            'name': 'Test 2',
-            'content': 'This is a test message from 2'
-        }];
+        this.getAllMessages();
     },
     methods: {
         messageSent(message) {
             console.log('This message is sent', message);
             this.messages.push({ 'id': this.messages.length + 1, 'name': message.name, 'content': message.content });
+        },
+        getAllMessages() {
+            this.messages = [];
         }
     }
 }
