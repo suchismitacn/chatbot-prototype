@@ -1,15 +1,12 @@
 <template>
     <div
-        :class="[
-            'row',
-            message?.by === 'sender'
-                ? 'justify-content-start'
-                : 'justify-content-end',
-        ]"
+        :class="['row p-1', self ? 'justify-content-start' : 'justify-content-end']"
     >
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">{{ message?.name }}</div>
+                <div class="card-header">
+                    {{ message.sender ? message.sender.name : "User" }}
+                </div>
                 <div class="card-body">
                     {{ message?.content }}
                 </div>
@@ -20,9 +17,15 @@
 
 <script>
 export default {
-    props: ["message", "index"],
+    props: ["message", "sender"],
+    data() {
+        return {
+            self: "",
+        };
+    },
     mounted() {
         console.log("ChatMessage mounted.");
+        this.self = this.sender.id == this.message.sender_id;
     },
 };
 </script>

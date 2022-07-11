@@ -64,9 +64,9 @@ class ConversationController extends Controller
     public function sendMessage(Request $request)
     {
         Log::debug('Attributes: '.print_r($request->all(), true));
-        // return true;
         try {
-            return $this->conversationRepository->storeConversation($request->all());
+            $message = $this->conversationRepository->storeConversation($request->all());
+            return $message->load('sender');
         } catch (QueryException $exception) {
             throw new InvalidArgumentException($exception->getMessage());
         }

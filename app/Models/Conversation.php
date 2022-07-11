@@ -11,4 +11,21 @@ class Conversation extends Model
     ];
 
     protected $guarded = [];
+
+
+    /**
+     * Get message owner details.
+     */
+    public function sender()
+    {
+        return $this->belongsTo('App\Models\User', 'sender_id', 'id');
+    }
+
+    /**
+     * Get message owner details.
+     */
+    public function receiver()
+    {
+        return $this->belongsTo('App\Models\User', 'recipient_id', 'id');
+    }
 }

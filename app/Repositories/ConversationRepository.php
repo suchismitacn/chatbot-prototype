@@ -57,7 +57,7 @@ class ConversationRepository
     public function fetchMessages($firstUserId, $secondUserId, $where = [])
     {
         $messages = $this->conversation
-        // ->with(['sender:id,firstname,username'])
+            ->with('sender')
             ->whereIn('sender_id', [$firstUserId, $secondUserId])
             ->whereIn('recipient_id', [$firstUserId, $secondUserId]);
 

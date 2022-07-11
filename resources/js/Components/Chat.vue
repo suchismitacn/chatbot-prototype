@@ -9,6 +9,7 @@
                     v-for="message in messages"
                     :key="message.id"
                     :message="message"
+                    :sender="sender"
                 ></chat-message>
             </div>
             <div class="card-footer">
@@ -48,12 +49,7 @@ export default {
                 .post("/chat/send-message", data)
                 .then((response) => {
                     console.log("Response", response);
-                    this.messages.push({
-                        id: this.messages.length + 1,
-                        name: this.sender.name,
-                        content: message,
-                        by: "sender",
-                    });
+                    this.messages.push(response.data);
                 })
                 .catch((error) => console.error("Error", error));
         },
