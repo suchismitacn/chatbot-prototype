@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Repositories\ConversationRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
 class ConversationController extends Controller
@@ -13,6 +14,21 @@ class ConversationController extends Controller
     public function __construct()
     {
         $this->conversationRepository = new ConversationRepository();
+    }
+
+    public function initChat()
+    {
+        $recipient = User::where(['is_online' => 1])->inRandomOrder()->first(); // needs changing
+        $sender = Auth::check() ? Auth::user() : ['id' => session()->getId(), 'name' => 'User'];
+        if ($recipient) {
+            $data = [
+                'recipient' => $recipient,
+                'sender' => $sender
+            ];
+        } else {
+            $data = ['status' => 'No agents available! Please try after some time.'];
+        }
+        return view('chat-section', $data);
     }
 
     public function findMessage($messageId)
