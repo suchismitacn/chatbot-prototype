@@ -22,7 +22,7 @@ export default {
     },
     methods: {
         sendMessage() {
-            console.log("Enter has been pressed");
+            console.log("Enter pressed");
             if (this.message) {
                 this.$emit("messageSent", this.message);
                 this.message = "";

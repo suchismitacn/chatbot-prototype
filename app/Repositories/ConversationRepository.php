@@ -17,15 +17,16 @@ class ConversationRepository
         $this->conversation = new Conversation();
     }
 
-    public function storeConversation($sender_id, $recipient_id, string $origin, string $content, array $optionalData = null)
+    public function storeConversation($attributes)
     {
-        return $this->conversation->create([
-            'sender_id' => $sender_id,
-            'recipient_id' => $recipient_id,
-            'origin' => $origin,
-            'content' => $content,
-            'optional_data' => $optionalData
-        ]);
+        // return $this->conversation->create([
+        //     'sender_id' => $sender_id,
+        //     'recipient_id' => $recipient_id,
+        //     'origin' => $origin,
+        //     'content' => $content,
+        //     'optional_data' => $optionalData
+        // ]);
+        return $this->conversation->create($attributes);
     }
 
     public function getConversation($condition)
@@ -55,13 +56,12 @@ class ConversationRepository
 
     public function fetchMessages($firstUserId, $secondUserId, $where = [])
     {
-        $messages = $this->conversation->with(['sender:id,firstname,username'])
+        $messages = $this->conversation
+        // ->with(['sender:id,firstname,username'])
             ->whereIn('sender_id', [$firstUserId, $secondUserId])
             ->whereIn('recipient_id', [$firstUserId, $secondUserId]);
-        if (array_key_exists('is_system_message', $where)) {
-            $messages->where('is_system_message', $where['is_system_message']);
-        }
-        $messages = $messages->orderBy('id', 'desc')->paginate(10);
+
+        $messages = $messages->orderBy('id', 'asc')->paginate(10);
 
         return $messages;
     }

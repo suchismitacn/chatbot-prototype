@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import ChatBox from "./ChatBox.vue";
 import ChatMessage from "./ChatMessage.vue";
 export default {
@@ -32,6 +33,7 @@ export default {
     mounted() {
         console.log("Chat mounted.");
         console.log("Chat Initiated Between:", this.sender, this.recipient);
+        this.getAllMessages();
     },
     methods: {
         messageSent(message) {
@@ -42,15 +44,31 @@ export default {
                 content: message,
             };
             console.log("Sending...", data);
-            this.messages.push({
-                id: this.messages.length + 1,
-                name: this.sender.name,
-                content: message,
-                by: "sender",
-            });
+            axios
+                .post("/chat/send-message", data)
+                .then((response) => {
+                    console.log("Response", response);
+                    this.messages.push({
+                        id: this.messages.length + 1,
+                        name: this.sender.name,
+                        content: message,
+                        by: "sender",
+                    });
+                })
+                .catch((error) => console.error("Error", error));
         },
         getAllMessages() {
-            this.messages = [];
+            let data = {
+                sender_id: this.sender.id,
+                recipient_id: this.recipient.id,
+            };
+            axios
+                .post("/chat/fetch-messages", data)
+                .then((response) => {
+                    console.log("Response", response);
+                    this.messages = response.data.data;
+                })
+                .catch((error) => console.error("Error", error));
         },
     },
 };

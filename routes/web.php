@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BotManController;
+use App\Http\Controllers\ConversationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,8 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/chat', function () {
-    return view('chat-section');
+Route::group(['prefix' => 'chat'], function () {
+    Route::get('/', [ConversationController::class, 'initChat']);
+    Route::get('/agent', [ConversationController::class, 'initAgentChat']);
+    Route::post('/send-message', [ConversationController::class, 'sendMessage']);
+    Route::post('/fetch-messages', [ConversationController::class, 'fetchMessages']);
 });
 
 Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);

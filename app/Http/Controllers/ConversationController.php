@@ -7,6 +7,7 @@ use App\Repositories\ConversationRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 class ConversationController extends Controller
@@ -18,7 +19,7 @@ class ConversationController extends Controller
 
     public function initChat()
     {
-        $recipient = User::where(['is_online' => 1])->inRandomOrder()->first(); // needs changing
+        $recipient = User::where(['is_online' => 1])->first(); // needs changing
         $sender = Auth::check() ? Auth::user() : ['id' => session()->getId(), 'name' => 'User'];
         if ($recipient) {
             $data = [
@@ -27,6 +28,22 @@ class ConversationController extends Controller
             ];
         } else {
             $data = ['status' => 'No agents available! Please try after some time.'];
+        }
+        return view('chat-section', $data);
+    }
+
+    public function initAgentChat ()
+    {
+        $sessionId = 'Sw9O38uRGweJaHyd3ZZYKRqx37bC9hB02nookpMN';
+        $recipient = ['id' => $sessionId, 'name' => 'User']; // needs changing
+        $sender = User::where(['is_online' => 1])->first();
+        if ($recipient) {
+            $data = [
+                'recipient' => $recipient,
+                'sender' => $sender
+            ];
+        } else {
+            $data = ['status' => 'No users available! Please try after some time.'];
         }
         return view('chat-section', $data);
     }
@@ -44,18 +61,20 @@ class ConversationController extends Controller
     }
 
 
-    public function sendMessage($attributes)
+    public function sendMessage(Request $request)
     {
+        Log::debug('Attributes: '.print_r($request->all(), true));
+        // return true;
         try {
-            return $this->conversationRepository->storeConversation($attributes);
+            return $this->conversationRepository->storeConversation($request->all());
         } catch (QueryException $exception) {
             throw new InvalidArgumentException($exception->getMessage());
         }
     }
 
-    public function fetchMessages($firstUserId, $secondUserId)
+    public function fetchMessages(Request $request)
     {
-        $messages = $this->conversationRepository->fetchMessages($firstUserId, $secondUserId);
+        $messages = $this->conversationRepository->fetchMessages($request->sender_id, $request->recipient_id);
         return $messages;
     }
 
