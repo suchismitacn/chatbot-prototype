@@ -29,6 +29,7 @@ class MenuConversation extends Conversation
             'valuation' => 'Valuation',
             'dealerships' => 'Nearest dealerships',
             'contacts' => 'Useful contacts',
+            'live_chat' => 'Talk to an agent'
         ];
         $name = $this->bot->userStorage()->get('name') ?? 'user';
         $question = $this->createQuestion('Hello, ' . $name . '! What do you want to know about?', $options, 'ask_department');
@@ -45,6 +46,9 @@ class MenuConversation extends Conversation
                     case 'contacts':
                         $this->getContacts();
                         break;
+                    case 'live_chat':
+                        $this->talkToAgent();
+                        break;
                     default:
                         $this->say('What ' . $answer->getValue() . ' related queries do you want help with?');
                 }
@@ -60,14 +64,14 @@ class MenuConversation extends Conversation
         $this->ask('What is your postcode?', function (Answer $answer) {
             if (preg_match("/^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\s?[0-9][A-Za-z]{2}$/", $answer->getValue())) {
                 /* Fetch nearest dealership info via api and display, I'm using placeholder values for demo purposes */
-                $details = config('dealerships.'. $answer->getValue());
-                if($details) {
+                $details = config('dealerships.' . $answer->getValue());
+                if ($details) {
                     $response = '<p>Here are the dealership details for you:</p>
-                    <p><strong>Address:</strong> '.$details['address'].'</p>
-                    <p><strong>Sales:</strong> '.$details['sales'].'</p>
-                    <p><strong>Service:</strong> '.$details['service'].'</p>';
+                    <p><strong>Address:</strong> ' . $details['address'] . '</p>
+                    <p><strong>Sales:</strong> ' . $details['sales'] . '</p>
+                    <p><strong>Service:</strong> ' . $details['service'] . '</p>';
                 } else {
-                    $response = 'Sorry! We couldn\'t find a dealership based on your postcode.'; 
+                    $response = 'Sorry! We couldn\'t find a dealership based on your postcode.';
                 }
                 $this->say($response);
             } else {
@@ -84,6 +88,12 @@ class MenuConversation extends Conversation
         <p><a href="https://www.facebook.com/StoneacreMotorGroup">Facebook</a></p>
         <p><a href="https://twitter.com/StoneacreMotors">Twitter</a></p>';
         $this->say($response);
+    }
+
+    protected function talkToAgent()
+    {
+        $chatUrl = route('live-chat', ['from' => 'user', 'chatId' => $this->bot->userStorage()->get('chatId')]);
+        $this->say('Please go to this link: <a href=' . $chatUrl . ' target="_blank">Live Chat</a>');
     }
 
     protected function createButtons($options)

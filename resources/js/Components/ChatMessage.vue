@@ -5,7 +5,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    {{ message.sender ? message.sender.name : "User" }}
+                    {{ message.sender ? message.sender.name : (message.origin === 'Chatbot' ? message.origin : 'User') }}
                 </div>
                 <div class="card-body">
                     {{ message?.content }}

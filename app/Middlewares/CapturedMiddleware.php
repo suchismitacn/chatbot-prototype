@@ -6,6 +6,7 @@ use App\Repositories\ConversationRepository;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Interfaces\Middleware\Captured;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
+use Illuminate\Support\Str;
 
 class CapturedMiddleware implements Captured
 {
@@ -20,12 +21,17 @@ class CapturedMiddleware implements Captured
      */
     public function captured(IncomingMessage $message, $next, BotMan $bot)
     {
-        $this->storeConversation('chatbot', $message->getText());
+        $chatId = $bot->userStorage()->get('chatId') ?? $bot->userStorage()->save([
+            'chatId' => Str::uuid()
+        ]);
+        $data = [
+            'chat_session' => $chatId,
+            'sender_id' => request()->session()->getId(),
+            'recipient_id' => null,
+            'origin' => 'Chatbot',
+            'content' => $message->getText()
+        ];
+        (new ConversationRepository)->storeConversation($data);
         return $next($message);
-    }
-
-    protected function storeConversation(string $origin, string $text, array $options = null)
-    {
-        return (new ConversationRepository)->storeConversation(request()->session()->getId(), null, $origin, $text, $options);
     }
 }

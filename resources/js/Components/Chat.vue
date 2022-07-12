@@ -25,7 +25,7 @@ import ChatBox from "./ChatBox.vue";
 import ChatMessage from "./ChatMessage.vue";
 export default {
     components: { ChatMessage, ChatBox },
-    props: ["users", "sender", "recipient"],
+    props: ["users", "sender", "recipient", "chatId"],
     data() {
         return {
             messages: [],
@@ -39,6 +39,7 @@ export default {
     methods: {
         messageSent(message) {
             let data = {
+                chat_session: this.chatId,
                 sender_id: this.sender.id,
                 recipient_id: this.recipient.id,
                 origin: "Live Chat",
@@ -55,6 +56,7 @@ export default {
         },
         getAllMessages() {
             let data = {
+                chat_session: this.chatId,
                 sender_id: this.sender.id,
                 recipient_id: this.recipient.id,
             };

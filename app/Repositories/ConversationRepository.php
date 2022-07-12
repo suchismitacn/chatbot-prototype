@@ -19,13 +19,6 @@ class ConversationRepository
 
     public function storeConversation($attributes)
     {
-        // return $this->conversation->create([
-        //     'sender_id' => $sender_id,
-        //     'recipient_id' => $recipient_id,
-        //     'origin' => $origin,
-        //     'content' => $content,
-        //     'optional_data' => $optionalData
-        // ]);
         return $this->conversation->create($attributes);
     }
 
@@ -58,8 +51,9 @@ class ConversationRepository
     {
         $messages = $this->conversation
             ->with('sender')
-            ->whereIn('sender_id', [$firstUserId, $secondUserId])
-            ->whereIn('recipient_id', [$firstUserId, $secondUserId]);
+            // ->whereIn('sender_id', [$firstUserId, $secondUserId])
+            // ->whereIn('recipient_id', [$firstUserId, $secondUserId])
+            ->where($where);
 
         $messages = $messages->orderBy('id', 'asc')->paginate(10);
 

@@ -19,10 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::group(['prefix' => 'chat'], function () {
-    Route::get('/', [ConversationController::class, 'initChat']);
-    Route::get('/agent', [ConversationController::class, 'initAgentChat']);
     Route::post('/send-message', [ConversationController::class, 'sendMessage']);
     Route::post('/fetch-messages', [ConversationController::class, 'fetchMessages']);
+    Route::get('/{from}/{chatId}', [ConversationController::class, 'initChat'])->name('live-chat');
+
 });
 
 Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);

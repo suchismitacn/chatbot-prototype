@@ -8,7 +8,8 @@
                     <strong>{{ $status }}</strong>
                 </div>
             @else
-                <chat :sender='@json($sender)' :recipient='@json($recipient)'></chat>
+                <chat :sender='@json($sender)' :recipient='@json($recipient)'
+                    :chat-id='@json($chatId)'></chat>
             @endif
         </div>
     </div>

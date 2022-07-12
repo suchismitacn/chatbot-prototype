@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Repositories\ConversationRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -17,33 +16,27 @@ class ConversationController extends Controller
         $this->conversationRepository = new ConversationRepository();
     }
 
-    public function initChat()
+    public function initChat($from, $chatId)
     {
-        $recipient = User::where(['is_online' => 1])->first(); // needs changing
-        $sender = Auth::check() ? Auth::user() : ['id' => session()->getId(), 'name' => 'User'];
-        if ($recipient) {
-            $data = [
-                'recipient' => $recipient,
-                'sender' => $sender
-            ];
+        $agent = User::where(['is_online' => 1])->first();
+        $user = ['id' => request()->session()->getId(), 'name' => 'User'];
+        if ($from === 'agent') {
+            $recipient = $user; // needs changing
+            $sender = $agent; // needs changing
+        } else if ($from === 'user') {
+            $recipient = $agent; // needs changing
+            $sender = $user; // needs changing
         } else {
-            $data = ['status' => 'No agents available! Please try after some time.'];
+            abort(404);
         }
-        return view('chat-section', $data);
-    }
-
-    public function initAgentChat ()
-    {
-        $sessionId = 'Sw9O38uRGweJaHyd3ZZYKRqx37bC9hB02nookpMN';
-        $recipient = ['id' => $sessionId, 'name' => 'User']; // needs changing
-        $sender = User::where(['is_online' => 1])->first();
         if ($recipient) {
             $data = [
                 'recipient' => $recipient,
-                'sender' => $sender
+                'sender' => $sender,
+                'chatId' => $chatId
             ];
         } else {
-            $data = ['status' => 'No users available! Please try after some time.'];
+            $data = ['status' => 'No user(s) available! Please try after some time.'];
         }
         return view('chat-section', $data);
     }
@@ -63,7 +56,7 @@ class ConversationController extends Controller
 
     public function sendMessage(Request $request)
     {
-        Log::debug('Attributes: '.print_r($request->all(), true));
+        Log::debug('Attributes: ' . print_r($request->all(), true));
         try {
             $message = $this->conversationRepository->storeConversation($request->all());
             return $message->load('sender');
@@ -74,7 +67,7 @@ class ConversationController extends Controller
 
     public function fetchMessages(Request $request)
     {
-        $messages = $this->conversationRepository->fetchMessages($request->sender_id, $request->recipient_id);
+        $messages = $this->conversationRepository->fetchMessages($request->sender_id, $request->recipient_id, $request->where);
         return $messages;
     }
 
