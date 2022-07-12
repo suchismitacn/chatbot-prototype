@@ -29,7 +29,7 @@ $botman->hears('mail', function ($bot) {
 });
 
 $botman->hears('bye', function ($bot) {
-    $user = $bot->userStorage()->get('name') ?? 'user';
+    $user = $bot->userStorage()->get('userName') ?? 'user';
     $bot->reply('Bye ' . $user . '! Have a nice day. :)');
     $bot->reply('You can always wake me up by saying hi.');
     /* user storage can be deleted only by this way, I tried to delete from inside 

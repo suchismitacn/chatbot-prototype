@@ -67,7 +67,8 @@ class ConversationController extends Controller
 
     public function fetchMessages(Request $request)
     {
-        $messages = $this->conversationRepository->fetchMessages($request->sender_id, $request->recipient_id, $request->where);
+        // $messages = $this->conversationRepository->fetchMessages($request->sender_id, $request->recipient_id); 
+        $messages = $this->conversationRepository->getConversation($request->where);
         return $messages;
     }
 

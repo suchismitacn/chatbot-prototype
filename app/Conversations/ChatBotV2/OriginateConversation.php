@@ -14,7 +14,7 @@ class OriginateConversation extends Conversation
      */
     public function run()
     {
-        $this->name = $this->bot->userStorage()->get('name');
+        $this->name = $this->bot->userStorage()->get('userName');
 
         if (!$this->name) {
             $this->askName();
@@ -29,7 +29,7 @@ class OriginateConversation extends Conversation
             if (trim($answer->getText())) {
                 $this->name = $answer->getText();
                 $this->bot->userStorage()->save([
-                    'name' => $this->name
+                    'userName' => $this->name
                 ]);
                 $this->bot->startConversation(new MenuConversation);
             } else {

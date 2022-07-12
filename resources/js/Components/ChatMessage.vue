@@ -5,10 +5,9 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    {{ message.sender ? message.sender.name : (message.origin === 'Chatbot' ? message.origin : 'User') }}
+                    {{ message.origin }}
                 </div>
-                <div class="card-body">
-                    {{ message?.content }}
+                <div class="card-body" v-html="message.content">
                 </div>
             </div>
         </div>

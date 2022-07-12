@@ -17,7 +17,7 @@ class InitConversation extends Conversation
      */
     public function run()
     {
-        $this->name = $this->bot->userStorage()->get('name');
+        $this->name = $this->bot->userStorage()->get('userName');
 
         if (!$this->name) {
             $this->askName();
@@ -32,7 +32,7 @@ class InitConversation extends Conversation
             if (trim($answer->getText())) {
                 $this->name = $answer->getText();
                 $this->bot->userStorage()->save([
-                    'name' => $this->name
+                    'userName' => $this->name
                 ]);
                 $this->askChoice();
             } else {

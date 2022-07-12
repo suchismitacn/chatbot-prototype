@@ -42,7 +42,7 @@ export default {
                 chat_session: this.chatId,
                 sender_id: this.sender.id,
                 recipient_id: this.recipient.id,
-                origin: "Live Chat",
+                origin: this.sender.name,
                 content: message,
             };
             console.log("Sending...", data);

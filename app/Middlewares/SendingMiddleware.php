@@ -32,9 +32,7 @@ class SendingMiddleware implements Sending
         /* in documentation payload value is further used to call getText() and getActions(), 
         but in practice I had to use 'message' index otherwise code was throwing errors */
         $message = $payload['message'];
-        $chatId = $bot->userStorage()->get('chatId') ?? $bot->userStorage()->save([
-            'chatId' => Str::uuid()
-        ]);
+        $chatId = $bot->userStorage()->get('chatId');
         $data = [
             'chat_session' => $chatId,
             'sender_id' => null,
@@ -45,7 +43,6 @@ class SendingMiddleware implements Sending
         if ($message instanceof Question) {
             $data['optional_data'] = $message->getActions();
         }
-        \Log::debug("Message: " . print_r($message, true));
         (new ConversationRepository)->storeConversation($data);
     }
 }

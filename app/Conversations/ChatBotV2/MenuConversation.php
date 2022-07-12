@@ -31,7 +31,7 @@ class MenuConversation extends Conversation
             'contacts' => 'Useful contacts',
             'live_chat' => 'Talk to an agent'
         ];
-        $name = $this->bot->userStorage()->get('name') ?? 'user';
+        $name = $this->bot->userStorage()->get('userName') ?? 'user';
         $question = $this->createQuestion('Hello, ' . $name . '! What do you want to know about?', $options, 'ask_department');
 
         return $this->ask($question, function (Answer $answer) {
