@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewMessageRecieved implements ShouldBroadcast
+class NewMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,7 +33,7 @@ class NewMessageRecieved implements ShouldBroadcast
      */
     public function broadcastAs()
     {
-        return 'message.recieved';
+        return 'message.received';
     }
 
     /**
@@ -43,6 +43,6 @@ class NewMessageRecieved implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('messages');
+        return new Channel('messages.' . $this->message->recipient_id);
     }
 }

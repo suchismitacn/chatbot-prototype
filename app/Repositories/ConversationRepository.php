@@ -28,7 +28,7 @@ class ConversationRepository
             ->with('sender')
             ->where($condition)
             ->orderBy('id', 'asc')
-            ->paginate(100);
+            ->get();
     }
 
     public function sendConversation(string $sessionId, string $email)
@@ -44,18 +44,12 @@ class ConversationRepository
         return true;
     }
 
-    public function fetchOneMessage(array $where)
-    {
-        return $this->conversation->with(['sender:id,firstname,username', 'receiver:id,firstname,username'])->where($where)->first();
-    }
-
     public function fetchMessages($firstUserId, $secondUserId)
     {
         $messages = $this->conversation
             ->with('sender')
             ->whereIn('sender_id', [$firstUserId, $secondUserId])
             ->whereIn('recipient_id', [$firstUserId, $secondUserId]);
-
 
         $messages = $messages->orderBy('id', 'asc')->paginate(10);
 

@@ -5,7 +5,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    {{ message.origin }}
+                    <span :class="[self ? 'text-success' : 'text-danger']">{{ message.origin }}</span>
                 </div>
                 <div class="card-body" v-html="message.content">
                 </div>

@@ -2,9 +2,13 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <span>Live Chat</span> - {{ recipient?.name }}
+                <span>Live Chat</span> - {{ recipient.name }}
             </div>
-            <div class="card-body overflow-auto" style="height: 500px">
+            <div
+                id="chat-log"
+                class="card-body overflow-auto"
+                style="height: 500px"
+            >
                 <chat-message
                     v-for="message in messages"
                     :key="message.id"
@@ -14,6 +18,7 @@
             </div>
             <div class="card-footer">
                 <chat-box @message-sent="messageSent"></chat-box>
+                <small class="text-muted">{{ incomingText }}</small>
             </div>
         </div>
     </div>
@@ -29,12 +34,38 @@ export default {
     data() {
         return {
             messages: [],
+            incomingText: "",
         };
     },
-    created() {
+    mounted() {
         console.log("Chat mounted.");
-        // console.log("Chat Initiated Between:", this.sender, this.recipient);
+        console.log("Chat Initiated Between:", this.sender, this.recipient);
+        Echo.channel(`messages.${this.sender.id}`).listen(
+            ".message.received",
+            (e) => {
+                console.log(`A new message from ${e.message.origin}`);
+                this.incomingText = `${e.message.origin} is typing...`;
+                this.pushMessage(e.message, 2000);
+            }
+        );
+        // .whisper("typing", {
+        //     name: this.sender.name,
+        // }).listenForWhisper(
+        //     "typing",
+        //     (e) => {
+        //         console.log("Someone is typing", e.name);
+        //     }
+        // );
+
         this.getAllMessages();
+    },
+    updated() {
+        console.log("Chat updated");
+        let el = document.getElementById("chat-log");
+        el.scrollTo({
+            top: el.scrollHeight,
+            behavior: "smooth",
+        });
     },
     methods: {
         messageSent(message) {
@@ -50,7 +81,7 @@ export default {
                 .post("/chat/send-message", data)
                 .then((response) => {
                     // console.log("Response", response);
-                    this.messages.push(response.data);
+                    this.pushMessage(response.data);
                 })
                 .catch((error) => console.error("Error", error));
         },
@@ -64,9 +95,15 @@ export default {
                 .post("/chat/fetch-messages", data)
                 .then((response) => {
                     // console.log("Response", response);
-                    this.messages = response.data.data;
+                    this.messages = response.data; // use paginated data later
                 })
                 .catch((error) => console.error("Error", error));
+        },
+        pushMessage($message, $delay = 100) {
+            setTimeout(() => {
+                this.messages.push($message);
+                this.incomingText = "";
+            }, $delay);
         },
     },
 };

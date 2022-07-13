@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewMessageRecieved;
+use App\Events\NewMessage;
 use App\Models\User;
 use App\Repositories\ConversationRepository;
 use Illuminate\Database\QueryException;
@@ -42,27 +42,14 @@ class ConversationController extends Controller
         return view('chat-section', $data);
     }
 
-    public function findMessage($messageId)
-    {
-        return $this->conversationRepository->find($messageId);
-    }
-
-
-    public function fetchMessage(array $where)
-    {
-        $message = $this->conversationRepository->fetchOneMessage($where);
-        return $message;
-    }
-
-
     public function sendMessage(Request $request)
     {
         Log::debug('Attributes: ' . print_r($request->all(), true));
         try {
             $message = $this->conversationRepository->storeConversation($request->all());
-            // NewMessageRecieved::dispatchIf($message->recipient_id, $message);
-            event(new NewMessageRecieved($message));
-            return $message->load('sender');
+            $message = $message->load('sender');
+            NewMessage::dispatchIf($message->recipient_id, $message);
+            return $message;
         } catch (QueryException $exception) {
             throw new InvalidArgumentException($exception->getMessage());
         }
@@ -73,31 +60,5 @@ class ConversationController extends Controller
         // $messages = $this->conversationRepository->fetchMessages($request->sender_id, $request->recipient_id); 
         $messages = $this->conversationRepository->getConversation($request->where);
         return $messages;
-    }
-
-
-    public function userConversationSummary($where, $agentId = null)
-    {
-        $user = null;
-        $conversationSummary = collect();
-        $conversationSummary = $this->conversationRepository->userConversationSummary($where);
-        if ($agentId) {
-            $user = User::find($agentId); // change required
-        } else if (!$agentId && !$conversationSummary->isEmpty()) {
-            $firstUser = $conversationSummary->first();
-            if ($firstUser->sender_id == auth()->user()->id) {
-                $userId = $firstUser->recipient_id;
-            } else {
-                $userId = $firstUser->sender_id;
-            }
-            $user = User::find($userId); // change required
-        }
-        return ['initiatedWith' => $user, 'conversationSummary' => $conversationSummary];
-    }
-
-    public function markAsRead($firstUserId = null, $secondUserId = null, $messageId = null)
-    {
-        $read_messages = $this->conversationRepository->markAsRead($firstUserId, $secondUserId, $messageId);
-        return $read_messages;
     }
 }
