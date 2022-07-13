@@ -6,16 +6,17 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
-        "fruitcake/laravel-cors": "^2.0",
+        "beyondcode/laravel-websockets": "^1.13",
         "botman/botman": "^2.7",
         "botman/driver-web": "^1.5",
+        "fruitcake/laravel-cors": "^2.0",
         "genkovich/dialog-flow-bot-man-middleware": "^0.0.6",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.4"
-
+        "laravel/ui": "^3.4",
+        "pusher/pusher-php-server": "^7.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

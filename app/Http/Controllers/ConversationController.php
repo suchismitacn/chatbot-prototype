@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessageRecieved;
 use App\Models\User;
 use App\Repositories\ConversationRepository;
 use Illuminate\Database\QueryException;
@@ -59,6 +60,8 @@ class ConversationController extends Controller
         Log::debug('Attributes: ' . print_r($request->all(), true));
         try {
             $message = $this->conversationRepository->storeConversation($request->all());
+            // NewMessageRecieved::dispatchIf($message->recipient_id, $message);
+            event(new NewMessageRecieved($message));
             return $message->load('sender');
         } catch (QueryException $exception) {
             throw new InvalidArgumentException($exception->getMessage());

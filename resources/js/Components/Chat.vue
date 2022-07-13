@@ -31,9 +31,9 @@ export default {
             messages: [],
         };
     },
-    mounted() {
+    created() {
         console.log("Chat mounted.");
-        console.log("Chat Initiated Between:", this.sender, this.recipient);
+        // console.log("Chat Initiated Between:", this.sender, this.recipient);
         this.getAllMessages();
     },
     methods: {
@@ -45,11 +45,11 @@ export default {
                 origin: this.sender.name,
                 content: message,
             };
-            console.log("Sending...", data);
+            // console.log("Sending...", data);
             axios
                 .post("/chat/send-message", data)
                 .then((response) => {
-                    console.log("Response", response);
+                    // console.log("Response", response);
                     this.messages.push(response.data);
                 })
                 .catch((error) => console.error("Error", error));
@@ -63,7 +63,7 @@ export default {
             axios
                 .post("/chat/fetch-messages", data)
                 .then((response) => {
-                    console.log("Response", response);
+                    // console.log("Response", response);
                     this.messages = response.data.data;
                 })
                 .catch((error) => console.error("Error", error));
