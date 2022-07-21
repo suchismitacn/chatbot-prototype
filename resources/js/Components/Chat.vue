@@ -2,7 +2,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <span>Live Chat</span> - {{ recipient.name }}
+                <span>Live Chat</span> {{ recipient?.name }}
             </div>
             <div
                 id="chat-log"
@@ -16,12 +16,13 @@
                     :sender="sender"
                 ></chat-message>
             </div>
-            <div class="card-footer">
+            <div class="card-footer" v-if="recipient">
                 <chat-box @message-sent="messageSent"></chat-box>
                 <small class="text-muted">{{ incomingText }}</small>
             </div>
         </div>
     </div>
+    <chat-users v-if="isAdmin" :sender="sender" @new-chat="newChat"></chat-users>
 </template>
 
 <script>
@@ -30,17 +31,20 @@ import ChatBox from "./ChatBox.vue";
 import ChatMessage from "./ChatMessage.vue";
 export default {
     components: { ChatMessage, ChatBox },
-    props: ["users", "sender", "recipient", "chatId"],
+    props: ["chatSender", "chatRecipient", "chatSession", "isAdmin"],
     data() {
         return {
             messages: [],
             incomingText: "",
+            sender: null,
+            recipient: null,
+            chatId: null
         };
     },
-    mounted() {
-        console.log("Chat mounted.");
-        console.log("Chat Initiated Between:", this.sender, this.recipient);
-        Echo.channel(`messages.${this.sender.id}`).listen(
+    created() {
+        console.log("Chat created.");
+        this.newChat(this.chatSender, this.chatRecipient, this.chatSession);
+                Echo.channel(`messages.${this.sender?.id}`).listen(
             ".message.received",
             (e) => {
                 console.log(`A new message from ${e.message.origin}`);
@@ -48,16 +52,6 @@ export default {
                 this.pushMessage(e.message, 2000);
             }
         );
-        // .whisper("typing", {
-        //     name: this.sender.name,
-        // }).listenForWhisper(
-        //     "typing",
-        //     (e) => {
-        //         console.log("Someone is typing", e.name);
-        //     }
-        // );
-
-        this.getAllMessages();
     },
     updated() {
         console.log("Chat updated");
@@ -105,6 +99,13 @@ export default {
                 this.incomingText = "";
             }, $delay);
         },
+        newChat(sender, recipient, chatId) {
+            console.log('A new chat has been initiated', sender, recipient, chatId);
+            this.sender = sender;
+            this.recipient = recipient;
+            this.chatId = chatId;
+            if (this.chatId) this.getAllMessages();
+        }
     },
 };
 </script>

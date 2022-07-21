@@ -12,8 +12,8 @@
 
 <script>
 export default {
-    mounted() {
-        console.log("ChatBox mounted.");
+    created() {
+        console.log("ChatBox created.");
     },
     data() {
         return {

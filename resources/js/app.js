@@ -32,5 +32,5 @@ import { createApp } from 'vue'
 const app = createApp({});
 
 app.component('chat', require('./components/Chat.vue').default);
-
+app.component('chat-users', require('./components/ChatUsers.vue').default);
 app.mount('#app');

@@ -82,9 +82,9 @@ class ConversationRepository
             ->where(function (Builder $query) use ($where) {
                 $query->where('sender_id', $where['userId'])->orWhere('recipient_id', $where['userId']);
             });
-        if ($where['type'] == 'unread') {
-            $conversationSummary->where('recipient_id', $where['userId'])->whereNull('read_at');
-        }
+        // if ($where['type'] == 'unread') {
+        //     $conversationSummary->where('recipient_id', $where['userId'])->whereNull('read_at');
+        // }
         $conversationSummary = $conversationSummary->latest()->get();
         return $conversationSummary;
     }

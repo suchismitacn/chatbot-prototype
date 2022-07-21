@@ -8,11 +8,11 @@
                     <strong>{{ $status }}</strong>
                 </div>
             @else
-                <chat :sender='@json($sender)' :recipient='@json($recipient)'
-                    :chat-id='@json($chatId)'></chat>
-                    @auth()
-                        <chat-user-list :users='@json($user)' :sender='@json($sender)'></chat-user-list>
-                    @endauth
+                <chat 
+                :chat-sender='@json($sender)' 
+                :chat-recipient='@json($recipient)'
+                :chat-session='@json($chatId)' 
+                :is-admin='@json(request()->route()->named('admin-live-chat') ? true : false)'></chat>
             @endif
         </div>
     </div>

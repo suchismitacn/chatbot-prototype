@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Repositories\ConversationRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -45,10 +44,17 @@ class ConversationController extends Controller
 
     public function initAdminChat()
     {
-        $sender = Auth::user();
-        $users = $this->conversationRepository->userConversationSummary(['userId' => $sender->id]);
+        $data['sender'] = User::where(['is_online' => 1])->first();
+        $data['recipient'] = null;
+        $data['chatId'] = null;
 
-        return view('chat-section', ['sender' => $sender, 'users' => $users]);
+        return view('chat-section', $data);
+    }
+
+    public function fetchUsers(Request $request)
+    {
+        $users = $this->conversationRepository->userConversationSummary($request->all());
+        return $users;
     }
 
     public function sendMessage(Request $request)

@@ -22,8 +22,8 @@ export default {
             self: "",
         };
     },
-    mounted() {
-        console.log("ChatMessage mounted.");
+    created() {
+        console.log("ChatMessage created.");
         this.self = this.sender.id == this.message.sender_id;
     },
 };
