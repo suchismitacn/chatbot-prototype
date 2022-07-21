@@ -77,7 +77,7 @@ class ConversationRepository
         GREATEST(sender_id, recipient_id) AS greatest_recipient_id,
         MAX(id) AS max_id')->groupBy('least_sender_id', 'greatest_recipient_id')->pluck('max_id')->toArray();
 
-        $conversationSummary = $this->conversation->with(['sender:id,firstname,lastname,username', 'receiver:id,firstname,lastname,username'])
+        $conversationSummary = $this->conversation->with(['sender', 'receiver'])
             ->whereIn('id', $chats)
             ->where(function (Builder $query) use ($where) {
                 $query->where('sender_id', $where['userId'])->orWhere('recipient_id', $where['userId']);

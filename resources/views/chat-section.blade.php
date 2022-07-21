@@ -10,6 +10,9 @@
             @else
                 <chat :sender='@json($sender)' :recipient='@json($recipient)'
                     :chat-id='@json($chatId)'></chat>
+                    @auth()
+                        <chat-user-list :users='@json($user)' :sender='@json($sender)'></chat-user-list>
+                    @endauth
             @endif
         </div>
     </div>

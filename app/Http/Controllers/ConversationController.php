@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Repositories\ConversationRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -40,6 +41,14 @@ class ConversationController extends Controller
             $data = ['status' => 'No user(s) available! Please try after some time.'];
         }
         return view('chat-section', $data);
+    }
+
+    public function initAdminChat()
+    {
+        $sender = Auth::user();
+        $users = $this->conversationRepository->userConversationSummary(['userId' => $sender->id]);
+
+        return view('chat-section', ['sender' => $sender, 'users' => $users]);
     }
 
     public function sendMessage(Request $request)

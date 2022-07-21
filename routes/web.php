@@ -22,8 +22,9 @@ Route::group(['prefix' => 'chat'], function () {
     Route::post('/send-message', [ConversationController::class, 'sendMessage']);
     Route::post('/fetch-messages', [ConversationController::class, 'fetchMessages']);
     Route::get('/{from}/{chatId}', [ConversationController::class, 'initChat'])->name('live-chat');
-
+    Route::get('/admin', [ConversationController::class, 'initAdminChat'])->name('admin-live-chat')->middleware('auth');
 });
+
 
 Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);
 Route::get('/botman/tinker', [BotManController::class, 'tinker']);
