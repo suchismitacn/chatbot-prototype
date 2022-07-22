@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewMessage;
+use App\Models\ChatSession;
 use App\Models\User;
 use App\Repositories\ConversationRepository;
 use Illuminate\Database\QueryException;
@@ -17,10 +18,10 @@ class ConversationController extends Controller
         $this->conversationRepository = new ConversationRepository();
     }
 
-    public function initChat($from, $chatId)
+    public function initChat($from, $chatSession)
     {
         $agent = User::where(['is_online' => 1])->first();
-        $user = ['id' => request()->session()->getId(), 'name' => 'User'];
+        $user = ChatSession::select('guest_id as id, guest_name as name')->firstWhere(['chat_uuid' => $chatSession]);
         if ($from === 'agent') {
             $recipient = $user; // needs changing
             $sender = $agent; // needs changing
@@ -34,7 +35,7 @@ class ConversationController extends Controller
             $data = [
                 'recipient' => $recipient,
                 'sender' => $sender,
-                'chatId' => $chatId
+                'chatSession' => $chatSession
             ];
         } else {
             $data = ['status' => 'No user(s) available! Please try after some time.'];
@@ -46,7 +47,7 @@ class ConversationController extends Controller
     {
         $data['sender'] = User::where(['is_online' => 1])->first();
         $data['recipient'] = null;
-        $data['chatId'] = null;
+        $data['chatSession'] = null;
 
         return view('chat-section', $data);
     }

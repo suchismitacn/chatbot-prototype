@@ -15,7 +15,7 @@ class CreateChatSessionsTable extends Migration
     {
         Schema::create('chat_sessions', function (Blueprint $table) {
             $table->id();
-            $table->uuid('chat_session');
+            $table->uuid('chat_uuid');
             $table->string('guest_id')->nullable();
             $table->string('guest_name')->nullable();
             $table->string('admin_id')->nullable();

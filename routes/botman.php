@@ -35,6 +35,7 @@ $botman->hears('bye', function ($bot) {
     /* user storage can be deleted only by this way, I tried to delete from inside 
     conversation class, but it did not work. Same with stopsConversation. */
     $bot->userStorage()->delete();
+    request()->session()->forget('chatId');
 })->stopsConversation();
 
 $botman->hears('hi', function ($bot) {

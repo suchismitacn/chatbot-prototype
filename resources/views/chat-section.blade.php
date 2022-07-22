@@ -11,7 +11,7 @@
                 <chat 
                 :chat-sender='@json($sender)' 
                 :chat-recipient='@json($recipient)'
-                :chat-session='@json($chatId)' 
+                :chat-session='@json($chatSession)' 
                 :is-admin='@json(request()->route()->named('admin-live-chat') ? true : false)'></chat>
             @endif
         </div>

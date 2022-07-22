@@ -21,15 +21,18 @@ class CapturedMiddleware implements Captured
      */
     public function captured(IncomingMessage $message, $next, BotMan $bot)
     {
-        $chatId = $bot->userStorage()->get('chatId');
+        $chatId = request()->session()->get('chatId');
         $data = [
-            'chat_session' => $chatId,
+            'chat_session_id' => $chatId,
             'sender_id' => request()->session()->getId(),
             'recipient_id' => null,
             'origin' => 'User',
             'content' => $message->getText()
         ];
+        // \Log::debug('captured data: ' . print_r($data, true));
+
         (new ConversationRepository)->storeConversation($data);
+
         return $next($message);
     }
 }

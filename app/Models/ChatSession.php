@@ -16,7 +16,7 @@ class ChatSession extends Model
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->chat_session = Str::uuid()->toString();
+            $model->chat_uuid = Str::uuid()->toString();
         });
     }
 

@@ -15,7 +15,7 @@ class CreateOpenChatQueriesTable extends Migration
     {
         Schema::create('open_chat_queries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('chat_session_id')->constrained();
+            $table->foreignId('chat_session_id')->constrained()->onDelete('cascade');
             $table->string('sender_id');
             $table->string('sender_email');
             $table->text('query');

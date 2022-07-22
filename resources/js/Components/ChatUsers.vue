@@ -62,7 +62,7 @@ export default {
         },
         startChat(list) {
             let recipient = null;
-            let chatId = list.chat_session;
+            let chatId = list.chat_session_id;
             if(list.recipient_id == this.sender.id) {
                 recipient = {
                     id: list.sender_id,

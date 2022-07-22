@@ -92,7 +92,7 @@ class MenuConversation extends Conversation
 
     protected function talkToAgent()
     {
-        $chatUrl = route('live-chat', ['from' => 'user', 'chatId' => $this->bot->userStorage()->get('chatId')]);
+        $chatUrl = route('live-chat', ['from' => 'user', 'chatId' => request()->session()->get('chatUuid')]);
         $this->say('Please go to this link: <a href=' . $chatUrl . ' target="_blank">Live Chat</a>');
     }
 

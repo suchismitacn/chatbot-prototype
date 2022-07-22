@@ -64,7 +64,7 @@ export default {
     methods: {
         messageSent(message) {
             let data = {
-                chat_session: this.chatId,
+                chat_session_id: this.chatId,
                 sender_id: this.sender.id,
                 recipient_id: this.recipient.id,
                 origin: this.sender.name,
@@ -81,7 +81,7 @@ export default {
         },
         getAllMessages() {
             let data = {
-                chat_session: this.chatId,
+                chat_session_id: this.chatId,
                 sender_id: this.sender.id,
                 recipient_id: this.recipient.id,
             };
