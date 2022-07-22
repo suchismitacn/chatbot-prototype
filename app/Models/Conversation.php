@@ -12,13 +12,17 @@ class Conversation extends Model
 
     protected $guarded = [];
 
+    public function chatSession()
+    {
+        return $this->belongsTo('App\Models\ChatSession');
+    }
 
     /**
      * Get message owner details.
      */
     public function sender()
     {
-        return $this->belongsTo('App\Models\User', 'sender_id', 'id');
+        return $this->belongsTo('App\Models\User', 'sender_id');
     }
 
     /**
@@ -26,6 +30,6 @@ class Conversation extends Model
      */
     public function receiver()
     {
-        return $this->belongsTo('App\Models\User', 'recipient_id', 'id');
+        return $this->belongsTo('App\Models\User', 'recipient_id');
     }
 }

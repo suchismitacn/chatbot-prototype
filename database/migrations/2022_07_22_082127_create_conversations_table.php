@@ -15,7 +15,7 @@ class CreateConversationsTable extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('chat_session');
+            $table->foreignId('chat_session_id')->constrained();
             $table->string('sender_id')->nullable();
             $table->string('recipient_id')->nullable();
             $table->string('origin');

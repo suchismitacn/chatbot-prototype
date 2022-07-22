@@ -52,4 +52,14 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Conversation', 'recipient_id');
     }
 
+    public function managedChatSessions()
+    {
+        return $this->hasMany('App\Models\ChatSession', 'admin_id');
+    }
+
+    public function attendedOpenQueries()
+    {
+        return $this->hasMany('App\Models\OpenChatQuery', 'attended_by');
+    }
+
 }
